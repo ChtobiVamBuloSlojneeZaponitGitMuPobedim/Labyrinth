@@ -33,7 +33,7 @@ def waves(pole, way, posled):
                                                           '-{},{},{}'.format(k[0], k[1] + delt,
                                                                              next_col(posled, way[k[1]][k[0]][j][-1])))
                             next_visit.append([k[0], k[1] + delt])
-                if i % 2 == 1:
+                else:
                     delt = -i + 2
                     if str(k[0] + delt) + ',' + str(k[1]) not in way[k[1]][k[0]][j]:
                         if way[k[1]][k[0]][j][:-2] + \
@@ -75,7 +75,6 @@ def next_col(posl, ind):
     if ind >= len(posl):
         ind = 0
     return posl[ind]
-
 
 '''
 Проверка алгоритма
