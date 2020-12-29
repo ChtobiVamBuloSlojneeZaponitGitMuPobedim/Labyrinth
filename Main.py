@@ -5,14 +5,17 @@ from Setting_window import *
 from Setting_befor_game_window import *
 import pygame
 
+
 def main():
     pygame.init()
     pygame.display.set_caption('Labyrinth')
-    Variables.screen = pygame.display.set_mode(Variables.SCREEN_SIZE)
+    Variables.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    Variables.SCREEN_SIZE = Variables.SCREEN_HEIGHT, Variables.SCREEN_WIDTH = [Variables.screen.get_height(),
+                                                                               Variables.screen.get_width()]
     clock = pygame.time.Clock()
     '''Я предлагаю основной цикл реализовать в этом файле, а при обновлении приложения вызывать соответствующие 
     методы из каждого класса'''
-    window = Pole([15, 21], 3)
+    window = Pole([21, 15], 3)
     running = True
     '''Чтобы реализовать полиморфизм и при этом не делать лишних перерисовок, окно настроек и полная отрисовка игрового
     поля будет в этом методе, а частичное обновление игрового поля будет в методе update()'''

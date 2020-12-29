@@ -22,10 +22,11 @@ class Pole(Pra_window):
         super().__init__()
         self.width = size[0]
         self.height = size[1]
-        self.cell_size = int(min([var.SCREEN_WIDTH, var.SCREEN_HEIGHT * 0.9]) // max(size))
+        self.cell_size = min([int((var.SCREEN_HEIGHT * 0.9) // self.height),
+                              int((var.SCREEN_WIDTH * 0.9) // self.width)])
+        print(self.cell_size)
         self.board = pga.generate_pole(size, colors)
         self.left = (var.SCREEN_WIDTH - self.cell_size * (self.width + 1)) // 2
-        print(self.left)
         self.top = var.SCREEN_HEIGHT * 0.1
 
 
