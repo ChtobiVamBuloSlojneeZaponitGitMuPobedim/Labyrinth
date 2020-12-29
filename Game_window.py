@@ -42,6 +42,7 @@ class Pole(Pra_window):
 
     def update(self):
         var.screen.fill('black')
+        self.hero_sprites.update(-1)
         self.all_cells_sprites.draw(var.screen)
         self.all_doors.draw(var.screen)
         self.hero_sprites.draw(var.screen)
@@ -118,8 +119,6 @@ class Pole(Pra_window):
                     cell.image = pygame.transform.rotate(cell.image, alpha)
 
 
-
-
 class Hero(pygame.sprite.Sprite):
     image = load_image("hero.png")
 
@@ -132,9 +131,42 @@ class Hero(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.left + (x - 1) * self.height + self.height // 5 * 2
         self.rect.y = self.top + y * self.height + self.height // 5 * 2
+        self.travel = False
+        self.proid_put = 0
+        self.del_put = 15
+        self.per_po = 'x'
+
+
 
     def update(self, napr):
-        if napr % 2 == 0:
-            self.rect.y += self.height * (napr - 1)
-        else:
-            self.rect.x -= self.height * (napr - 2)
+        if self.travel:
+            if 'y' in self.per_po:
+                if len(self.per_po) == 1:
+                    self.rect.y += self.height // self.del_put
+                    if self.proid_put + 1 == self.del_put:
+                        self.rect.y += self.height - self.height // self.del_put * self.del_put
+                else:
+                    self.rect.y -= self.height // self.del_put
+                    if self.proid_put + 1 == self.del_put:
+                        self.rect.y -= self.height - self.height // self.del_put * self.del_put
+            else:
+                if len(self.per_po) == 1:
+                    self.rect.x += self.height // self.del_put
+                    if self.proid_put + 1 == self.del_put:
+                        self.rect.x += self.height - self.height // self.del_put * self.del_put
+                else:
+                    self.rect.x -= self.height // self.del_put
+                    if self.proid_put + 1 == self.del_put:
+                        self.rect.x -= self.height - self.height // self.del_put * self.del_put
+            self.proid_put += 1
+            if self.proid_put == self.del_put:
+                self.proid_put = 0
+                self.travel = False
+        elif napr == -1:
+            return
+        elif not self.travel:
+            self.travel = True
+            if napr % 2 == 0:
+                self.per_po = str(napr - 1)[:-1] + 'y'
+            else:
+                self.per_po = str(-(napr - 2))[:-1] + 'x'
