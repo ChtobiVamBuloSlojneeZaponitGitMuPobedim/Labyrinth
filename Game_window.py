@@ -22,19 +22,41 @@ class Pole(Pra_window):
         super().__init__()
         self.width = size[0]
         self.height = size[1]
-        self.cell_size = min([int((var.SCREEN_HEIGHT * 0.9) // self.height),
-                              int((var.SCREEN_WIDTH * 0.9) // self.width)])
-        print(self.cell_size)
+        self.cell_size = min([int((var.SCREEN_HEIGHT * 0.89) // self.height),
+                              int(var.SCREEN_WIDTH // self.width)])
         self.board = pga.generate_pole(size, colors)
-        self.left = (var.SCREEN_WIDTH - self.cell_size * (self.width + 1)) // 2
+        self.left = (var.SCREEN_WIDTH - self.cell_size * self.width) // 2
         self.top = var.SCREEN_HEIGHT * 0.1
-
-
 
     def first_update(self):
         var.screen.fill('black')
         self.all_cells_sprites = pygame.sprite.Group()
         self.all_doors = pygame.sprite.Group()
+        self.hero_sprites = pygame.sprite.Group()
+        self.hero = Hero(self.width, 0, self.hero_sprites, self.cell_size, self.left, self.top)
+        self.draw_cells()
+        self.draw_doors()
+        self.all_cells_sprites.draw(var.screen)
+        self.all_doors.draw(var.screen)
+        self.hero_sprites.draw(var.screen)
+
+    def update(self):
+        var.screen.fill('black')
+        self.all_cells_sprites.draw(var.screen)
+        self.all_doors.draw(var.screen)
+        self.hero_sprites.draw(var.screen)
+
+    def window_event(self, key_press):
+        if key_press == pygame.K_LEFT:
+            self.hero_sprites.update(3)
+        if key_press == pygame.K_RIGHT:
+            self.hero_sprites.update(1)
+        if key_press == pygame.K_UP:
+            self.hero_sprites.update(0)
+        if key_press == pygame.K_DOWN:
+            self.hero_sprites.update(2)
+
+    def draw_cells(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 name = ''
@@ -55,6 +77,8 @@ class Pole(Pra_window):
                 cell.rect.x = int(self.left + self.cell_size * j)
                 cell.rect.y = int(self.top + self.cell_size * i)
                 cell.image = pygame.transform.rotate(cell.image, alpha)
+
+    def draw_doors(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 for k in range(len(self.board[i][j])):
@@ -93,8 +117,24 @@ class Pole(Pra_window):
                         cell.rect.y = int(self.top + self.cell_size * i + self.cell_size / 5 * 2)
                     cell.image = pygame.transform.rotate(cell.image, alpha)
 
-        self.all_cells_sprites.draw(var.screen)
-        self.all_doors.draw(var.screen)
 
-    def update(self):
-        pass
+
+
+class Hero(pygame.sprite.Sprite):
+    image = load_image("hero.png")
+
+    def __init__(self, x, y, group, height, left, top):
+        super().__init__(group)
+        self.image = pygame.transform.scale(Hero.image, (height // 5, height // 5))
+        self.height = height
+        self.left = left
+        self.top = top
+        self.rect = self.image.get_rect()
+        self.rect.x = self.left + (x - 1) * self.height + self.height // 5 * 2
+        self.rect.y = self.top + y * self.height + self.height // 5 * 2
+
+    def update(self, napr):
+        if napr % 2 == 0:
+            self.rect.y += self.height * (napr - 1)
+        else:
+            self.rect.x -= self.height * (napr - 2)

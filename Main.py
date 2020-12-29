@@ -15,7 +15,7 @@ def main():
     clock = pygame.time.Clock()
     '''Я предлагаю основной цикл реализовать в этом файле, а при обновлении приложения вызывать соответствующие 
     методы из каждого класса'''
-    window = Pole([21, 15], 3)
+    window = Pole([6, 5], 3)
     running = True
     '''Чтобы реализовать полиморфизм и при этом не делать лишних перерисовок, окно настроек и полная отрисовка игрового
     поля будет в этом методе, а частичное обновление игрового поля будет в методе update()'''
@@ -25,9 +25,10 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             '''Реализовать методы в классах, которые будут вызываться при различных событиях'''
+
             if event.type == pygame.KEYDOWN:
-                pass
-                #event.key
+                window.window_event(event.key)
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     pass
