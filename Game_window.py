@@ -1,5 +1,6 @@
 from Window import Pra_window
 import Variables as var
+from Setting_in_game import *
 import Pole_generate_algorithm as pga
 import pygame
 import sys
@@ -33,7 +34,7 @@ class Pole(Pra_window):
         self.all_cells_sprites = pygame.sprite.Group()
         self.all_doors = pygame.sprite.Group()
         self.hero_sprites = pygame.sprite.Group()
-        self.hero = Hero(self.width, 0, self.hero_sprites, self.cell_size, self.left, self.top)
+        self.hero = Hero(self.width - 1, 0, self.hero_sprites, self.cell_size, self.left, self.top, [self.height, self.width])
         self.draw_cells()
         self.draw_doors()
         self.all_cells_sprites.draw(var.screen)
@@ -41,7 +42,6 @@ class Pole(Pra_window):
         self.hero_sprites.draw(var.screen)
 
     def update(self):
-        var.screen.fill('black')
         self.hero_sprites.update(-1)
         self.all_cells_sprites.draw(var.screen)
         self.all_doors.draw(var.screen)
@@ -56,6 +56,9 @@ class Pole(Pra_window):
             self.hero_sprites.update(0)
         if key_press == pygame.K_DOWN:
             self.hero_sprites.update(2)
+        if key_press == pygame.K_ESCAPE:
+            # Переключение на экран настроек
+            Variables.window = Set_in_game()
 
     def draw_cells(self):
         for i in range(len(self.board)):
@@ -86,14 +89,10 @@ class Pole(Pra_window):
                     dor = self.board[i][j][k]
                     if dor == 's' or dor == 'n':
                         continue
-                    if k == 3:
+                    if k == 3 or k == 1:
                         alpha = -90
-                    if k == 0:
+                    if k == 0 or k == 2:
                         alpha = 0
-                    if k == 2:
-                       alpha = 0
-                    if k == 1:
-                        alpha = -90
                     if k < 2:
                         dor += '1'
                     else:
@@ -122,42 +121,32 @@ class Pole(Pra_window):
 class Hero(pygame.sprite.Sprite):
     image = load_image("hero.png")
 
-    def __init__(self, x, y, group, height, left, top):
+    def __init__(self, x, y, group, height, left, top, size):
         super().__init__(group)
         self.image = pygame.transform.scale(Hero.image, (height // 5, height // 5))
         self.height = height
         self.left = left
         self.top = top
         self.rect = self.image.get_rect()
-        self.rect.x = self.left + (x - 1) * self.height + self.height // 5 * 2
+        self.rect.x = self.left + x * self.height + self.height // 5 * 2
         self.rect.y = self.top + y * self.height + self.height // 5 * 2
         self.travel = False
         self.proid_put = 0
         self.del_put = 15
         self.per_po = 'x'
-
+        self.hero_way = [[y, x]]
+        self.nazad = False
+        self.size = size
 
 
     def update(self, napr):
         if self.travel:
-            if 'y' in self.per_po:
-                if len(self.per_po) == 1:
-                    self.rect.y += self.height // self.del_put
-                    if self.proid_put + 1 == self.del_put:
-                        self.rect.y += self.height - self.height // self.del_put * self.del_put
-                else:
-                    self.rect.y -= self.height // self.del_put
-                    if self.proid_put + 1 == self.del_put:
-                        self.rect.y -= self.height - self.height // self.del_put * self.del_put
-            else:
-                if len(self.per_po) == 1:
-                    self.rect.x += self.height // self.del_put
-                    if self.proid_put + 1 == self.del_put:
-                        self.rect.x += self.height - self.height // self.del_put * self.del_put
-                else:
-                    self.rect.x -= self.height // self.del_put
-                    if self.proid_put + 1 == self.del_put:
-                        self.rect.x -= self.height - self.height // self.del_put * self.del_put
+            self.rect.y += (self.hero_way[-1][0] - self.hero_way[-2][0]) * self.height // self.del_put
+            if self.proid_put + 1 == self.del_put:
+                self.rect.y = self.top + self.hero_way[-1][0] * self.height + self.height // 5 * 2
+            self.rect.x += (self.hero_way[-1][-1] - self.hero_way[-2][-1]) * self.height // self.del_put
+            if self.proid_put + 1 == self.del_put:
+                self.rect.x = self.left + self.hero_way[-1][-1] * self.height + self.height // 5 * 2
             self.proid_put += 1
             if self.proid_put == self.del_put:
                 self.proid_put = 0
@@ -167,6 +156,26 @@ class Hero(pygame.sprite.Sprite):
         elif not self.travel:
             self.travel = True
             if napr % 2 == 0:
-                self.per_po = str(napr - 1)[:-1] + 'y'
+                if [self.hero_way[-1][0] + int(str(napr - 1)[:-1] + '1'), self.hero_way[-1][-1]] not in self.hero_way[: -2]:
+                    if [self.hero_way[-1][0] + int(str(napr - 1)[:-1] + '1'), self.hero_way[-1][-1]] in self.hero_way:
+                        self.nazad = True
+                    else:
+                        self.hero_way.append([self.hero_way[-1][0] + int(str(napr - 1)[:-1] + '1'), self.hero_way[-1][-1]])
+                        self.nazad = False
+                else:
+                    self.travel = False
             else:
-                self.per_po = str(-(napr - 2))[:-1] + 'x'
+                if [self.hero_way[-1][0], self.hero_way[-1][-1] + int(str(-(napr - 2))[:-1] + '1')] not in self.hero_way[: -2]:
+                    if [self.hero_way[-1][0], self.hero_way[-1][-1] + int(str(-(napr - 2))[:-1] + '1')] in self.hero_way:
+                        self.nazad = True
+                    else:
+                        self.hero_way.append([self.hero_way[-1][0], self.hero_way[-1][-1] + int(str(-(napr - 2))[:-1] + '1')])
+                        self.nazad = False
+                else:
+                    self.travel = False
+            if (self.hero_way[-1][-1] >= self.size[-1] or self.hero_way[-1][0] >= self.size[0] or
+                    self.hero_way[-1][-1] < 0 or self.hero_way[-1][0] < 0):
+                self.travel = False
+                del self.hero_way[-1]
+                self.nazad = False
+            print(self.hero_way)
