@@ -9,9 +9,9 @@ import pygame
 def main():
     pygame.init()
     pygame.display.set_caption('Labyrinth')
-    Variables.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    Variables.SCREEN_SIZE = Variables.SCREEN_HEIGHT, Variables.SCREEN_WIDTH = [Variables.screen.get_height(),
-                                                                               Variables.screen.get_width()]
+    Variables.screen = pygame.display.set_mode(Variables.SCREEN_SIZE)#((0, 0), pygame.FULLSCREEN)
+    '''Variables.SCREEN_SIZE = Variables.SCREEN_HEIGHT, Variables.SCREEN_WIDTH = [Variables.screen.get_height(),
+                                                                               Variables.screen.get_width()]'''
     clock = pygame.time.Clock()
     '''Я предлагаю основной цикл реализовать в этом файле, а при обновлении приложения вызывать соответствующие 
     методы из каждого класса'''
