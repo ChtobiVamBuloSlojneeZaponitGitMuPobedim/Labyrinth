@@ -1,4 +1,4 @@
-import Variables
+import Variables as var
 from Main_window import *
 from Game_window import *
 from Setting_window import *
@@ -15,7 +15,8 @@ def main():
     clock = pygame.time.Clock()
     '''Я предлагаю основной цикл реализовать в этом файле, а при обновлении приложения вызывать соответствующие 
     методы из каждого класса'''
-    Variables.window = Pole([6, 5], 3)
+    w, h = pga.read_pole(var.FILENAME, 1)
+    Variables.window = Pole([w, h], 3)
     running = True
     '''Чтобы реализовать полиморфизм и при этом не делать лишних перерисовок, окно настроек и полная отрисовка игрового
     поля будет в этом методе, а частичное обновление игрового поля будет в методе update()'''
