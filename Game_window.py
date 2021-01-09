@@ -164,7 +164,7 @@ class Hero(pygame.sprite.Sprite):
         self.hero_way = [[y, x]]
         self.colors_posled = [colors[0]]
         self.nazad = False
-        self.size = size
+        self.size = pga.read_pole(var.FILENAME, 1)
 
     def update(self, napr):
         if self.travel:
