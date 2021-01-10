@@ -253,6 +253,7 @@ class Hero(pygame.sprite.Sprite):
             if var.CHLVL < 10:
                 var.name = 'Игра'
             else:
+                var.CHLVL = 0
                 var.name = 'Главное меню'
             var.CHANGE_WINDOW = True
 
