@@ -250,7 +250,7 @@ class Hero(pygame.sprite.Sprite):
             pygame.display.flip()
             pygame.time.delay(1500)
             var.CHLVL += 1
-            if var.CHLVL < 4:
+            if var.CHLVL < 10:
                 var.name = 'Игра'
             else:
                 var.name = 'Главное меню'

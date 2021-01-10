@@ -44,7 +44,7 @@ def read_pole(filename, flag):
         return color
 
 def generate_random_pole(w, h, c, l): # width, height, col-vo colors, level(1, 2, 3)
-    col = ['r', 'b', 'g', 'o', 't' 'y'] # red, blue, green, orange, light blue, yellow
+    col = ['r', 'b', 'g', 'y', 't' 'y'] # red, blue, green, orange, light blue, yellow
     if c < 2:
         return 'Error'
     if w < 3:
@@ -112,10 +112,24 @@ def generate_random_pole(w, h, c, l): # width, height, col-vo colors, level(1, 2
         b = random.randint(1, 2) # 1 - Вверх, 2 - Вправо
         if b == 1:
             e = random.randint(1, w - 2)
+            if y != h - 1:
+                pole[y][w - x - 1][2] = col[d]
+                pole[y + 1][w - x - 1][0] = col[d]
+                d += 1
+                if d == c:
+                    d = 0
+                y += 1
         if b == 2:
             e = random.randint(1, h - 2)
+            if x != w - 1:
+                pole[y][w - x - 1][3] = col[d]
+                pole[y][w - x - 2][1] = col[d]
+                d += 1
+                if d == c:
+                    d = 0
+                x += 1
         while x != w - 1 or y != h - 1:
-            if b == 0:
+            if b == 1:
                 a = random.randint(1, 2) # 1 - Вниз, 2 - Влево
                 if a == 1:
                     if y != h - 1:
@@ -147,7 +161,7 @@ def generate_random_pole(w, h, c, l): # width, height, col-vo colors, level(1, 2
                             d += 1
                             if d == c:
                                 d = 0
-            if b == 2 or b == 1:
+            if b == 2:
                 a = random.randint(1, 2) # 1 - Вниз, 2 - Влево
                 if a == 1:
                     if y != h - 1:
@@ -193,8 +207,38 @@ def generate_random_pole(w, h, c, l): # width, height, col-vo colors, level(1, 2
                                 pole[i + 1][j][0] = col[(a // 2)]
     return pole
 
+def write_pole(filename):
+    w, h, c, l = var.WAHACAL[var.CHLVL]
+    pole = generate_random_pole(w, h, c, l)
+    f1 = open(filename, 'w')
+    d = []
+    for i in range(h * 2 + 1):
+        zz = []
+        for j in range(w * 2 + 1):
+            zz.append('s')
+        d.append(zz)
+    for i in range(1, h * 2 + 1, 2):
+        for j in range(1, w * 2 + 1, 2):
+            d[i][j] = '0'
+            if i == 1 and j == w * 2:
+                d[i][j] = '1'
+            if i == h * 2 and j == 1:
+                d[i][j] = '2'
+    for i in range(1, h * 2 + 1, 2):
+        for j in range(1, w * 2 + 1, 2):
+            d[i - 1][j] = pole[i // 2][j // 2][0]
+            d[i][j + 1] = pole[i // 2][j // 2][1]
+            d[i + 1][j] = pole[i // 2][j // 2][2]
+            d[i][j - 1] = pole[i // 2][j // 2][3]
+    for i in range(h * 2 + 1):
+        d[i] = ''.join(d[i])
+    e = '\n'.join(d)
+    f1.write(e)
+    f1.close()
+
 def generate_pole(size, colors):
     # Пока пусть возвращает это поле, потом добавим алгоритм
     colors = list(var.COLOR_VALUE.keys())[: colors]
+    write_pole(var.FILENAME[var.CHLVL])
     pole = read_pole(var.FILENAME[var.CHLVL], 0)
     return pole, colors

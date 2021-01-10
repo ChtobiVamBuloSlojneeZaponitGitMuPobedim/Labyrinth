@@ -100,7 +100,7 @@ def change_window():
     elif Variables.name == 'Игровое меню':
         Variables.window = Pre_game_setting()
     elif Variables.name == 'Игра':
-        Variables.window = Pole(read_pole(var.FILENAME[var.CHLVL], 1), read_pole(var.FILENAME[var.CHLVL], 2))
+        Variables.window = Pole([Variables.WAHACAL[var.CHLVL][0], Variables.WAHACAL[var.CHLVL][1]], Variables.WAHACAL[var.CHLVL][2])
     Variables.window.first_update()
 
 

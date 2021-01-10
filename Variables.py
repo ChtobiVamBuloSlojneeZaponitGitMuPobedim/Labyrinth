@@ -13,8 +13,11 @@ COLOR_VALUE = {
     'y': 'yellow',
     'o': 'orange'
 }
-FILENAME = ['pole/Pole1.txt', 'pole/Pole2.txt', 'pole/Pole3.txt', 'pole/Pole4.txt']
-CHLVL = 1
+FILENAME = ['pole/Pole1.txt', 'pole/Pole2.txt', 'pole/Pole3.txt', 'pole/Pole4.txt', 'pole/Pole5.txt',
+            'pole/Pole6.txt', 'pole/Pole7.txt', 'pole/Pole8.txt', 'pole/Pole9.txt', 'pole/Pole10.txt']
+WAHACAL = [[4, 4, 2, 1], [6, 6, 2, 2], [8, 8, 2, 2], [10, 10, 2, 2], [16, 16, 2, 2],
+         [8, 8, 3, 1], [10, 10, 3, 2], [12, 12, 3, 2], [10, 10, 4, 1], [12, 12, 4, 2]]
+CHLVL = 0
 CON = sqlite3.connect('data_base.db')
 CUR = CON.cursor()
 COLOR_ACTIVE = pygame.Color(41, 150, 150)
